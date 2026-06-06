@@ -1,0 +1,38 @@
+name: "Trivy Security Scan"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  trivy_scan:
+    name: Run Trivy Vulnerability Scanner
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Run Trivy Scanner (Filesystem)
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'table'
+        output: 'trivy-report.txt'
+        exit-code: '0'
+        severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+        vuln-type: 'os,library'
+
+    - name: Show Scan Results in Workflow Log
+      run: cat trivy-report.txt
+
+    - name: Upload Security Audit Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: Security-Audit-Report
+        path: trivy-report.txt
+        retention-days: 30

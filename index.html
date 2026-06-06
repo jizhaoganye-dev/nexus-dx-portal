@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS DX Portal - BtoB Enterprise Dashboard</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="NEXUS DX Portal - BtoB向けデータ分析ダッシュボードとセキュリティ監視ポータル。リアルタイムなビジネスマネジメントと堅牢なDevSecOpsの統合プラットフォーム。">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="NEXUS DX Portal - Enterprise Dashboard">
+    <meta property="og:description" content="リアルタイムなビジネス分析と堅牢なDevSecOps監視を統合したBtoB向けダッシュボード。">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="app-layout">
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="メニューを開閉する" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="メインナビゲーション">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-text">NEXUS</span><span class="logo-dx">DX</span>
+            </div>
+            <p class="logo-sub">Enterprise Portal</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <button class="nav-item active" data-target="dashboard" aria-label="ダッシュボード概要を表示">
+                        <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                        <span class="nav-text">ダッシュボード</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-target="analytics" aria-label="データ分析を表示">
+                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
+                        <span class="nav-text">データ分析</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-target="tasks" aria-label="タスク管理を表示">
+                        <span class="nav-icon"><i class="fa-solid fa-list-check"></i></span>
+                        <span class="nav-text">タスク管理</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-target="security" aria-label="セキュリティ監視を表示">
+                        <span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                        <span class="nav-text">セキュリティ監視</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="nav-item" data-target="settings" aria-label="設定を表示">
+                        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                        <span class="nav-text">設定</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="footer-badge">
+                <span class="badge-dot"></span>
+                <span class="badge-label">Secured by DevSecOps</span>
+            </div>
+            <p class="powered-by">Powered by AI & GitHub Actions</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content" role="main">
+        
+        <!-- Top Bar Header -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 id="page-title" class="page-title">ダッシュボード概要</h1>
+                <p class="page-subtitle">リアルタイムビジネスインテリジェンス</p>
+            </div>
+            
+            <div class="top-bar-right">
+                <!-- Search Bar -->
+                <div class="search-bar" role="search">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="search" placeholder="システム内を検索..." aria-label="システム検索" class="search-input">
+                </div>
+                
+                <!-- Date/Time Display -->
+                <div class="time-display" id="timeDisplay" aria-label="現在日時">
+                    2026年06月07日 05:37
+                </div>
+                
+                <!-- Notification Trigger -->
+                <div class="notification-trigger-container">
+                    <button class="notification-bell" id="notificationBell" aria-label="通知センター" aria-expanded="false">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="bell-badge">3</span>
+                    </button>
+                    
+                    <!-- Notification Panel -->
+                    <div class="notification-panel" id="notificationPanel">
+                        <div class="panel-header">
+                            <h3>通知センター</h3>
+                            <button class="mark-read-btn" aria-label="すべて既読にする">すべて既読</button>
+                        </div>
+                        <ul class="notification-list">
+                            <li class="notification-item unread">
+                                <span class="notification-icon success"><i class="fa-solid fa-shield-halved"></i></span>
+                                <div class="notification-content">
+                                    <p class="notification-msg"><strong>OWASP ZAP</strong> ベースラインスキャンが正常に完了しました。</p>
+                                    <span class="notification-time">1時間前</span>
+                                </div>
+                            </li>
+                            <li class="notification-item unread">
+                                <span class="notification-icon info"><i class="fa-solid fa-code"></i></span>
+                                <div class="notification-content">
+                                    <p class="notification-msg"><strong>CodeQL</strong> 解析により安全性が確認されました。</p>
+                                    <span class="notification-time">2時間前</span>
+                                </div>
+                            </li>
+                            <li class="notification-item unread">
+                                <span class="notification-icon warning"><i class="fa-solid fa-circle-exclamation"></i></span>
+                                <div class="notification-content">
+                                    <p class="notification-msg">新しいパッケージの更新が Dependabot から提案されています。</p>
+                                    <span class="notification-time">1日前</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Profile Avatar -->
+                <div class="profile-menu">
+                    <span class="profile-icon"><i class="fa-solid fa-circle-user"></i></span>
+                    <span class="profile-name">管理者</span>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard Content Grid -->
+        <div class="dashboard-content">
+            
+            <!-- KPI Cards Grid -->
+            <section class="kpi-grid" aria-label="主要パフォーマンス指標">
+                
+                <!-- KPI 1: Revenue -->
+                <article class="kpi-card" tabindex="0">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">総売上</span>
+                        <span class="kpi-icon-wrapper blue"><i class="fa-solid fa-yen-sign"></i></span>
+                    </div>
+                    <div class="kpi-value">¥12,847,300</div>
+                    <div class="kpi-footer">
+                        <span class="kpi-change positive">
+                            <i class="fa-solid fa-arrow-up"></i> +8.2%
+                        </span>
+                        <span class="kpi-period">前月比</span>
+                    </div>
+                </article>
+                
+                <!-- KPI 2: Active Users -->
+                <article class="kpi-card" tabindex="0">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">アクティブユーザー</span>
+                        <span class="kpi-icon-wrapper purple"><i class="fa-solid fa-users"></i></span>
+                    </div>
+                    <div class="kpi-value">3,842</div>
+                    <div class="kpi-footer">
+                        <span class="kpi-change positive">
+                            <i class="fa-solid fa-arrow-up"></i> +12.5%
+                        </span>
+                        <span class="kpi-period">前月比</span>
+                    </div>
+                </article>
+                
+                <!-- KPI 3: Conversion Rate -->
+                <article class="kpi-card" tabindex="0">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">コンバージョン率</span>
+                        <span class="kpi-icon-wrapper amber"><i class="fa-solid fa-bullseye"></i></span>
+                    </div>
+                    <div class="kpi-value">4.73%</div>
+                    <div class="kpi-footer">
+                        <span class="kpi-change negative">
+                            <i class="fa-solid fa-arrow-down"></i> -0.8%
+                        </span>
+                        <span class="kpi-period">前月比</span>
+                    </div>
+                </article>
+                
+                <!-- KPI 4: Security Alerts -->
+                <article class="kpi-card" tabindex="0">
+                    <div class="kpi-card-header">
+                        <span class="kpi-label">セキュリティアラート</span>
+                        <span class="kpi-icon-wrapper green"><i class="fa-solid fa-shield-halved"></i></span>
+                    </div>
+                    <div class="kpi-value">0 件</div>
+                    <div class="kpi-footer">
+                        <span class="kpi-status-badge">
+                            <span class="pulse-dot green"></span> ALL CLEAR
+                        </span>
+                    </div>
+                </article>
+                
+            </section>
+            
+            <!-- Charts Section Grid -->
+            <section class="charts-grid" aria-label="データ推移分析">
+                
+                <!-- Line Chart: Revenue & Traffic -->
+                <div class="chart-container card" tabindex="0">
+                    <div class="chart-header">
+                        <div class="chart-header-left">
+                            <h2 class="section-title">売上・アクセス推移</h2>
+                            <p class="section-subtitle">月次の業績推移とトラフィックボリューム</p>
+                        </div>
+                        <div class="chart-controls" role="group" aria-label="表示期間の選択">
+                            <button class="control-btn active" aria-pressed="true">6ヶ月</button>
+                            <button class="control-btn" aria-pressed="false">1年</button>
+                            <button class="control-btn" aria-pressed="false">全期間</button>
+                        </div>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Bar Chart: Traffic Channels -->
+                <div class="chart-container card" tabindex="0">
+                    <div class="chart-header">
+                        <div class="chart-header-left">
+                            <h2 class="section-title">トラフィック経路分析</h2>
+                            <p class="section-subtitle">ユーザー流入チャネルの割合</p>
+                        </div>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                </div>
+                
+            </section>
+            
+            <!-- Interactive Task Board Section -->
+            <section class="task-board-section" aria-label="タスクボード">
+                <div class="section-header-block">
+                    <div>
+                        <h2 class="section-title">DevOps & タスク管理</h2>
+                        <p class="section-subtitle">カードをクリックすると次のフェーズへ移動します</p>
+                    </div>
+                </div>
+                
+                <div class="task-board-grid">
+                    <!-- Column 1: To Do -->
+                    <div class="task-column" id="col-todo" data-status="todo" role="region" aria-label="未着手タスク">
+                        <div class="column-header">
+                            <div class="column-title-wrapper">
+                                <span class="column-dot red"></span>
+                                <h3>未着手 (To Do)</h3>
+                            </div>
+                            <span class="column-count" id="count-todo">2</span>
+                        </div>
+                        <div class="task-list-container">
+                            <div class="task-card" draggable="false" tabindex="0" role="button" aria-label="LP リニューアルの要件ヒアリング. タグ: Design, 優先度: 高. クリックで進行中へ移動">
+                                <div class="task-card-header">
+                                    <span class="task-tag design">Design</span>
+                                    <span class="task-priority high">優先度: 高</span>
+                                </div>
+                                <h4 class="task-title">LP リニューアルの要件ヒアリング</h4>
+                                <p class="task-desc">クリエイティブ要件とコンバージョン最適化箇所の決定</p>
+                                <div class="task-footer">
+                                    <span class="task-assignee"><i class="fa-solid fa-user-circle"></i> デザイナー</span>
+                                </div>
+                            </div>
+                            <div class="task-card" draggable="false" tabindex="0" role="button" aria-label="Trivy 検知アラートの精査. タグ: Security, 優先度: 中. クリックで進行中へ移動">
+                                <div class="task-card-header">
+                                    <span class="task-tag security">Security</span>
+                                    <span class="task-priority medium">優先度: 中</span>
+                                </div>
+                                <h4 class="task-title">Trivy 検知アラートの精査</h4>
+                                <p class="task-desc">SCA脆弱性検出に対する依存ライブラリのバージョン更新確認</p>
+                                <div class="task-footer">
+                                    <span class="task-assignee"><i class="fa-solid fa-user-circle"></i> セキュリティ担当</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 2: In Progress -->
+                    <div class="task-column" id="col-inprogress" data-status="inprogress" role="region" aria-label="進行中タスク">
+                        <div class="column-header">
+                            <div class="column-title-wrapper">
+                                <span class="column-dot amber"></span>
+                                <h3>進行中 (In Progress)</h3>
+                            </div>
+                            <span class="column-count" id="count-inprogress">3</span>
+                        </div>
+                        <div class="task-list-container">
+                            <div class="task-card" draggable="false" tabindex="0" role="button" aria-label="CodeQL ルールセットの最適化. タグ: DevOps, 優先度: 高. クリックで完了へ移動">
+                                <div class="task-card-header">
+                                    <span class="task-tag devops">DevOps</span>
+                                    <span class="task-priority high">優先度: 高</span>
+                                </div>
+                                <h4 class="task-title">CodeQL ルールセットの最適化</h4>
+                                <p class="task-desc">誤検知削減のためのカスタムクエリとフィルタ設定</p>
+                                <div class="task-footer">
+                                    <span class="task-assignee"><i class="fa-solid fa-user-circle"></i> インフラエンジニア</span>
+                                </div>
+                            </div>
+                            <div class="task-card" draggable="false" tabindex="0" role="button" aria-label="Chart.js グラフの月次自動更新. タグ: Frontend, 優先度: 中. クリックで完了へ移動">
+                                <div class="task-card-header">
+                                    <span class="task-tag frontend">Frontend</span>
+                                    <span class="task-priority medium">優先度: 中</span>
+                                </div>
+                                <h4 class="task-title">Chart.js グラフの月次自動更新</h4>
+                                <p class="task-desc">APIデータソースと連携したリアルタイムレンダリングロジック</p>
+                                <div class="task-footer">
+                                    <span class="task-assignee"><i class="fa-solid fa-user-circle"></i> フロントエンド</span>
+                                </div>
+                            </div>
+                            <div class="task-card" draggable="false" tabindex="0" role="button" aria-label="CI/CD パイプラインの並列化検討. タグ: DevOps, 優先度: 低. クリックで完了へ移動">
+                                <div class="task-card-header">
+                                    <span class="task-tag devops">DevOps</span>
+                                    <span class="task-priority low">優先度: 低</span>
+                                </div>
+                                <h4 class="task-title">CI/CD パイプラインの並列化検討</h4>
+                                <p class="task-desc">GitHub Actions ジョブの依存関係整理と並列実行による時間短縮</p>
+                                <div class="task-footer">
+                                    <span class="task-assignee"><i class="fa-solid fa-user-circle"></i> インフラエンジニア</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 3: Done -->
+                    <div class="task-column" id="col-done" data-status="done" role="region" aria-label="完了タスク">
+                        <div class="column-header">
+                            <div class="column-title-wrapper">
+                                <span class="column-dot green"></span>
+                                <h3>完了 (Done)</h3>
+                            </div>
+                            <span class="column-count" id="count-done">2</span>
+                        </div>
+                        <div class="task-list-container">
+                            <div class="task-card" draggable="false" tabindex="0" role="button" aria-label="OWASP ZAP 定期スキャン設定完了. タグ: Security, 優先度: 高. クリックで未着手へ移動">
+                                <div class="task-card-header">
+                                    <span class="task-tag security">Security</span>
+                                    <span class="task-priority high">優先度: 高</span>
+                                </div>
+                                <h4 class="task-title">OWASP ZAP 定期スキャン設定完了</h4>
+                                <p class="task-desc">GitHub Actions 連携による毎週自動ダイナミックスキャンの自動化</p>
+                                <div class="task-footer">
+                                    <span class="task-assignee"><i class="fa-solid fa-user-circle"></i> セキュリティ担当</span>
+                                </div>
+                            </div>
+                            <div class="task-card" draggable="false" tabindex="0" role="button" aria-label="Lighthouse スコア 95+ 達成. タグ: Performance, 優先度: 中. クリックで未着手へ移動">
+                                <div class="task-card-header">
+                                    <span class="task-tag performance">Performance</span>
+                                    <span class="task-priority medium">優先度: 中</span>
+                                </div>
+                                <h4 class="task-title">Lighthouse スコア 95+ 達成</h4>
+                                <p class="task-desc">アセット圧縮、遅延読み込み、およびレンダリングブロックの解消</p>
+                                <div class="task-footer">
+                                    <span class="task-assignee"><i class="fa-solid fa-user-circle"></i> フロントエンド</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Security Audit Log Section -->
+            <section class="audit-section card" tabindex="0">
+                <div class="audit-header">
+                    <div class="audit-header-left">
+                        <h2 class="section-title">セキュリティ監査ログ</h2>
+                        <p class="section-subtitle">DevSecOpsパイプラインのリアルタイム自動監査実績</p>
+                    </div>
+                    <span class="live-monitoring-badge">
+                        <span class="pulse-dot green"></span> LIVE MONITORING
+                    </span>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">タイムスタンプ</th>
+                                <th scope="col">スキャナー</th>
+                                <th scope="col">対象</th>
+                                <th scope="col">ステータス</th>
+                                <th scope="col">検出件数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="timestamp">2026-06-07 04:00</td>
+                                <td class="scanner"><i class="fa-solid fa-shield-halved text-blue"></i> CodeQL (SAST)</td>
+                                <td class="target font-mono">nexus-dx-portal/script.js</td>
+                                <td><span class="status-badge passed">✅ PASSED</span></td>
+                                <td class="findings count-zero">0</td>
+                            </tr>
+                            <tr>
+                                <td class="timestamp">2026-06-07 04:00</td>
+                                <td class="scanner"><i class="fa-solid fa-shield-halved text-blue"></i> Trivy (SCA)</td>
+                                <td class="target font-mono">リポジトリ全体</td>
+                                <td><span class="status-badge passed">✅ PASSED</span></td>
+                                <td class="findings count-zero">0</td>
+                            </tr>
+                            <tr>
+                                <td class="timestamp">2026-06-07 03:30</td>
+                                <td class="scanner"><i class="fa-solid fa-shield-halved text-blue"></i> OWASP ZAP (DAST)</td>
+                                <td class="target font-mono">公開URL</td>
+                                <td><span class="status-badge passed">✅ PASSED</span></td>
+                                <td class="findings count-zero">0</td>
+                            </tr>
+                            <tr>
+                                <td class="timestamp">2026-06-06 22:15</td>
+                                <td class="scanner"><i class="fa-solid fa-shield-halved text-blue"></i> Dependabot</td>
+                                <td class="target font-mono">package依存関係</td>
+                                <td><span class="status-badge passed">✅ PASSED</span></td>
+                                <td class="findings count-zero">0</td>
+                            </tr>
+                            <tr>
+                                <td class="timestamp">2026-06-06 18:00</td>
+                                <td class="scanner"><i class="fa-solid fa-shield-halved text-blue"></i> CodeQL (SAST)</td>
+                                <td class="target font-mono">nexus-dx-portal/styles.css</td>
+                                <td><span class="status-badge passed">✅ PASSED</span></td>
+                                <td class="findings count-zero">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+        </div>
+        
+        <!-- App Footer -->
+        <footer class="app-footer">
+            <p>© 2026 NEXUS DX Portal — Built with AI & Secured by DevSecOps</p>
+        </footer>
+        
+    </main>
+
+    <!-- Chart.js (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Application Logic -->
+    <script src="script.js"></script>
+</body>
+</html>

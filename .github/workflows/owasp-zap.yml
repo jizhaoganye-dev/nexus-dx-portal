@@ -1,0 +1,29 @@
+name: "OWASP ZAP Dynamic Audit"
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Run weekly on Sundays at midnight UTC
+  workflow_dispatch: # Allow manual trigger via GitHub Actions UI
+
+jobs:
+  zap_scan:
+    name: Run OWASP ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Run OWASP ZAP Scan
+      uses: zaproxy/action-baseline@v0.12.0
+      with:
+        target: 'https://jizhaoganye-dev.github.io/nexus-dx-portal/'
+        rules_file_name: 'zap-rules.tsv'
+        allow_issue_writing: false
+        fail_action: false # Prevent scan failure from breaking the pipeline
+
+    # ZAP actions automatically save a report as an artifact, but we explicitly upload for certainty
+    - name: Upload ZAP Scan HTML Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ZAP-Dynamic-Scan-Report
+        path: zap_report.html
+        retention-days: 30

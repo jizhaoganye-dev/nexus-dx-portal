@@ -1,0 +1,3 @@
+# ZAP rules file to ignore or modify alert thresholds.
+# Format: <ruleId> <IGNORE|INFO|LOW|MEDIUM|HIGH> [reason]
+# Example: 10020 IGNORE (X-Frame-Options)
